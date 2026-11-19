@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PDF Studio - All Premium Free</title><link rel="stylesheet" href="./style.css">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#0f172a">
+<meta name="description" content="Convert, Edit & Merge PDFs — Free, No signup, No watermark">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'</script>
+</head><body>
+<header><div class="header-inner"><img src="logo.png" class="header-logo" alt="PDF Studio Logo"><div class="header-text"><div class="logo">PDF Studio <span class="badge">100% FREE • PREMIUM UNLOCKED</span></div><div class="sub">Convert, Edit & Merge PDFs — No signup, no watermark</div></div><div class="header-right"><span class="header-pill">✓ No Watermark</span><span class="header-pill">⚡ Fast</span></div></div></header>
+<div class="wrap">
+
+<div class="hero"><div><h1>All PDF Tools in One Place</h1><p>Word to PDF, Image to PDF, Edit Text & Merge — free, fast, on any device.</p></div><button class="hero-cta" onclick="document.querySelector('[data-tab=edit]').click()">Start Editing →</button></div>
+
+<div class="tabs" role="tablist">
+<button class="tab" data-tab="word">📄 <span>Word to PDF<small>DOCX → PDF</small></span></button>
+<button class="tab" data-tab="image">🖼️ <span>Image to PDF<small>JPG / PNG → PDF</small></span></button>
+<button class="tab active" data-tab="edit">✏️ <span>Edit PDF Text<small>Click any text</small></span></button>
+<button class="tab" data-tab="merge">📚 <span>Merge PDFs<small>Combine & reorder</small></span></button>
+</div>
+
+<section id="tab-word" class="card" style="display:none">
+<div class="card-head"><h2>Word to PDF</h2><span class="chip">DOCX → PDF</span></div><p class="small">Upload .docx → Convert to PDF. Same as before, only design changed.</p>
+<label class="drop"><strong>📄 Click to upload Word file</strong><span>Supports .docx, .doc • Max 25 MB</span><input type="file" id="wordFile" accept=".docx,.doc"></label>
+<div id="wordName" class="small"></div>
+<div class="row"><label>Page Size <select id="wordPageSize"><option>A4</option><option>Letter</option></select></label><label>Font Size <input type="number" id="wordFont" value="12" style="width:70px"></label><button class="btn" id="wordBtn" disabled>Convert to PDF</button></div>
+<div id="wordMsg"></div>
+</section>
+
+<section id="tab-image" class="card" style="display:none">
+<div class="card-head"><h2>Image to PDF</h2><span class="chip">IMAGES → PDF</span></div><p class="small">Multiple images → One PDF, one image per page</p>
+<label class="drop"><strong>🖼️ Click to upload images</strong><span>You can select multiple images at once</span><input type="file" id="imgFiles" accept="image/*" multiple></label>
+<div id="imgGrid" class="grid"></div>
+<div class="row"><label>Orientation <select id="imgOrient"><option value="portrait">Portrait</option><option value="landscape">Landscape</option></select></label><label>Fit <select id="imgFit"><option value="fit">Fit to page</option><option value="fill">Full page</option></select></label><button class="btn" id="imgBtn" disabled>Convert Images to PDF</button></div>
+</section>
+
+<section id="tab-edit" class="card">
+<div class="card-head"><h2>Edit PDF Text <span class="small">— Text only</span></h2><span class="chip">EDITOR</span></div>
+<p class="small">Upload a PDF → Click any text to edit it → Download. Use zoom to easily edit small text.</p>
+<label class="drop"><strong>✏️ Click to upload PDF</strong><span>Text editing works on selectable text PDFs</span><input type="file" id="editFile" accept="application/pdf"></label>
+<div class="zoom-toolbar" id="zoomToolbar">
+  <button id="zoomOut" title="Zoom Out (Ctrl + -)">−</button>
+  <span id="zoomLabel">100%</span>
+  <button id="zoomIn" title="Zoom In (Ctrl + +)">+</button>
+  <input type="range" id="zoomSlider" min="50" max="300" step="10" value="100" title="Zoom Slider">
+  <button id="zoomFit" title="Fit to Width">Fit Width</button>
+  <button id="zoomReset" title="Reset to 100%">Reset</button>
+  <span class="zoom-hint">Shortcuts: Ctrl + / Ctrl − • Ctrl + Mouse Wheel also works</span>
+</div>
+<div id="editPages" class="edit-pages-zoomable"><div class="small" style="padding:20px;text-align:center;">Pages will appear here after you upload a PDF. Use + / − to zoom in and out.</div></div>
+<div class="row" style="margin-top:12px;"><button class="btn green" id="editBtn" disabled>Download Edited PDF</button><span id="editCount" class="small"></span></div>
+<div id="editMsg"></div>
+</section>
+
+<section id="tab-merge" class="card" style="display:none">
+<div class="card-head"><h2>Merge PDFs — Preview & Adjust</h2><span class="chip">MERGE</span></div><p class="small">Upload multiple PDFs → Reorder, Rotate, Delete pages → Merge</p>
+<label class="drop"><strong>📚 Click to upload PDFs</strong><span>Select multiple PDFs to merge</span><input type="file" id="mergeFiles" accept="application/pdf" multiple></label>
+<div id="mergeList" class="grid"></div>
+<div class="row"><button class="btn dark" id="mergeBtn" disabled>Merge & Download PDF</button><span id="mergeCount" class="small"></span></div>
+</section>
+
+<div class="features">
+<div class="feat"><b>🔒 Private & Safe</b><p>Files stay in your browser, no signup needed.</p></div>
+<div class="feat"><b>⚡ Fast Convert</b><p>One click convert, no watermark, no limit.</p></div>
+<div class="feat"><b>📱 Any Device</b><p>Works on Desktop, Mobile & Tablet — fully responsive.</p></div>
+</div>
+
+<div class="footer">PDF Studio • Free Forever • Made for Desktop, Mobile & Tablet</div>
+</div>
+
+<script src="./config.js"></script>
+<script src="./app.js"></script>
+<script src="./direct-ads.js"></script>
+<script>if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js'); }</script>
+</body></html>

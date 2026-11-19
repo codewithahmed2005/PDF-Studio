@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Panel - PDF Studio Ads</title>
+<style>
+*{box-sizing:border-box} body{font-family:system-ui,sans-serif;margin:0;background:#f6f7fb}
+header{background:#111;color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px} header b{font-size:20px} header span{color:#4ade80;font-size:13px}
+.wrap{max-width:900px;margin:0 auto;padding:20px}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:18px;margin-bottom:16px}
+h2{margin:0 0 12px} label{font-size:13px;font-weight:600;color:#334155;display:block;margin:12px 0 4px}
+input[type=text],input[type=url],input[type=password],input[type=number]{width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{background:#2563eb;color:#fff;border:0;padding:11px 18px;border-radius:10px;font-weight:700;cursor:pointer}
+.btn.green{background:#16a34a} .btn.dark{background:#111} .btn.red{background:#dc2626} .btn.white{background:#fff;color:#111} .btn.orange{background:#ea580c}
+.preview{border:1px dashed #cbd5e1;border-radius:12px;padding:10px;margin-top:10px;text-align:center;background:#f8fafc}
+.preview img{max-width:100%;max-height:180px;border-radius:10px}
+.stat{display:inline-block;background:#f1f5f9;padding:10px 14px;border-radius:12px;margin-right:8px;font-weight:700}
+.small{font-size:12px;color:#64748b}
+.toggle{display:flex;gap:8px;align-items:center;margin:8px 0}
+.secure{background:#f0fdf4;border:1px solid #bbf7d0;padding:10px;border-radius:10px;font-size:13px;color:#166534}
+.time-box{background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:14px;margin-top:12px}
+.time-box h3{margin:0 0 8px;font-size:15px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){ .grid2{grid-template-columns:1fr} }
+</style></head><body>
+<header><div><b>📊 PDF Studio — Admin Panel</b> <span>• 🔒 Secure</span></div><div><button class="btn white" onclick="logout()">🚪 Logout</button> <a href="/" target="_blank"><button class="btn white">👀 View App</button></a></div></header>
+<div class="wrap">
+<div class="card secure">✅ You are logged in securely. You will be automatically logged out after 1 hour. Please click Logout when you are done.</div>
+
+<div class="card">
+<h2>📈 Ad Stats</h2>
+<div><span class="stat">👁️ Views: <span id="statViews">0</span></span><span class="stat">🖱️ Clicks: <span id="statClicks">0</span></span></div>
+<button class="btn dark" onclick="loadStats()">Refresh Stats</button>
+</div>
+
+<div class="card">
+<h2>🟦 Bottom Banner Ad</h2>
+<label class="toggle"><input type="checkbox" id="banner_enabled" checked> Banner is ON</label>
+<label>Advertiser / Website</label><input type="text" id="banner_advertiser">
+<label>Title</label><input type="text" id="banner_title">
+<label>Website Link</label><input type="url" id="banner_link">
+<label>Button Text</label><input type="text" id="banner_button">
+<label>Image Link or Upload</label><input type="url" id="banner_image_url">
+<div class="row"><input type="file" id="banner_file" accept="image/*"><button class="btn dark" onclick="uploadImage('banner')">📤 Upload</button></div>
+<div class="preview"><img id="banner_preview"><div class="small" id="banner_image_label"></div></div>
+<div class="row" style="margin-top:10px;"><button class="btn red" onclick="removeAd('banner')">🗑️ Remove This Ad</button></div>
+</div>
+
+<div class="card">
+<h2>⬅️ LEFT Side Ad</h2>
+<label class="toggle"><input type="checkbox" id="left_enabled" checked> Left Ad is ON</label>
+<label>Advertiser</label><input type="text" id="left_advertiser">
+<label>Title</label><input type="text" id="left_title">
+<label>Website Link</label><input type="url" id="left_link">
+<label>Button Text</label><input type="text" id="left_button">
+<label>Image (300x600 is best)</label><input type="url" id="left_image_url">
+<div class="row"><input type="file" id="left_file" accept="image/*"><button class="btn dark" onclick="uploadImage('left')">📤 Upload</button></div>
+<div class="preview"><img id="left_preview"><div class="small" id="left_image_label"></div></div>
+<div class="row" style="margin-top:10px;"><button class="btn red" onclick="removeAd('left')">🗑️ Remove</button></div>
+</div>
+
+<div class="card">
+<h2>➡️ RIGHT Side Ad</h2>
+<label class="toggle"><input type="checkbox" id="right_enabled" checked> Right Ad is ON</label>
+<label>Advertiser</label><input type="text" id="right_advertiser">
+<label>Title</label><input type="text" id="right_title">
+<label>Website Link</label><input type="url" id="right_link">
+<label>Button Text</label><input type="text" id="right_button">
+<label>Image (300x600 is best)</label><input type="url" id="right_image_url">
+<div class="row"><input type="file" id="right_file" accept="image/*"><button class="btn dark" onclick="uploadImage('right')">📤 Upload</button></div>
+<div class="preview"><img id="right_preview"><div class="small" id="right_image_label"></div></div>
+<div class="row" style="margin-top:10px;"><button class="btn red" onclick="removeAd('right')">🗑️ Remove</button></div>
+</div>
+
+<div class="card">
+<h2>🟩 Full-Screen Ad <span class="small">— Now also shows by time, not only after conversion</span></h2>
+<label class="toggle"><input type="checkbox" id="inter_enabled" checked> Full Ad is ON — If OFF, it will never show</label>
+<label>Advertiser</label><input type="text" id="inter_advertiser">
+<label>Title</label><input type="text" id="inter_title">
+<label>Website Link</label><input type="url" id="inter_link">
+<label>Button Text</label><input type="text" id="inter_button">
+<label>Image Link or Upload</label><input type="url" id="inter_image_url">
+<div class="row"><input type="file" id="inter_file" accept="image/*"><button class="btn dark" onclick="uploadImage('inter')">📤 Upload</button></div>
+<div class="preview"><img id="inter_preview"><div class="small" id="inter_image_label"></div></div>
+
+<div class="time-box">
+<h3>⏰ When Should Full Ad Show? — Timing Settings</h3>
+<p class="small">Control from here when the Full Ad appears. No need to edit code.</p>
+<div class="grid2">
+<div><label>1. Show after every how many conversions?</label><input type="number" id="inter_showAfterConverts" min="1" max="10" value="1"><div class="small">1 = After every conversion, 2 = After every 2nd conversion</div></div>
+<div><label>2. Auto-show after how many seconds? (0 = Auto OFF)</label><input type="number" id="inter_autoShow" min="0" max="300" value="15"><div class="small">15 = Will show automatically 15 seconds after app opens, without conversion</div></div>
+<div><label>3. Show how many seconds after conversion? (Delay)</label><input type="number" id="inter_delay" min="0" max="10" value="1"><div class="small">1 = Will show 1 second after conversion, so download completes first</div></div>
+<div><label>4. Show again after how long? (Cooldown)</label><input type="number" id="inter_cooldown" min="0" max="600" value="60"><div class="small">60 = Will not show again for 60 seconds after it was shown once</div></div>
+</div>
+<div class="row" style="margin-top:12px;"><button class="btn orange" onclick="testFullAd()">👁️ Test Now — Show Full Ad</button><span class="small">After saving, open the App tab to see if the ad is showing.</span></div>
+</div>
+
+<div class="row" style="margin-top:10px;"><button class="btn red" onclick="removeAd('inter')">🗑️ Remove This Ad</button></div>
+</div>
+
+<div class="card" style="text-align:center;">
+<button class="btn green" style="font-size:16px;padding:14px 28px;" onclick="saveAds()">💾 Save — All Ads + Timing Will Go Live</button>
+<p class="small" id="saveMsg">It will update without restart after you click Save.</p>
+</div>
+
+<div class="card">
+<h2>🔑 Change Password</h2>
+<label>Old Password</label><input type="password" id="oldPass">
+<label>New Password (min 6 characters)</label><input type="password" id="newPassAdmin">
+<button class="btn dark" onclick="changePass()">Change Password</button>
+<p class="small" id="changeMsg"></p>
+</div>
+
+</div>
+<script src="./config.js"></script>
+<script>
+let ADMIN_PATH = '';
+async function checkLogin(){
+  const me = await fetch(API_BASE + '/api/admin/me', { credentials:'include' }).then(r=>r.json());
+  if(!me.loggedIn){ window.location.href = './admin-login.html'; return; }
+  ADMIN_PATH = me.adminPath;
+}
+async function logout(){ await fetch(API_BASE + '/api/admin/logout', {method:'POST', credentials:'include'}); window.location.href = './admin-login.html'; }
+async function loadAds(){
+  const r = await fetch(API_BASE + '/api/ads', { credentials:'include' }); const ads = await r.json();
+  const src = { banner: ads.banner||{}, left: ads.leftAd||{}, right: ads.rightAd||{}, inter: ads.interstitial||{} };
+  for(const k of ['banner','left','right','inter']){
+    const a = src[k];
+    document.getElementById(k+'_enabled').checked = a.enabled !== false;
+    document.getElementById(k+'_advertiser').value = a.advertiser||'';
+    document.getElementById(k+'_title').value = a.title||'';
+    document.getElementById(k+'_link').value = a.link||'';
+    document.getElementById(k+'_button').value = a.buttonText||'Visit Website';
+    document.getElementById(k+'_image_url').value = a.image||'';
+    document.getElementById(k+'_preview').src = a.image||'';
+    document.getElementById(k+'_image_label').textContent = a.image||'';
+  }
+  const inter = src.inter;
+  document.getElementById('inter_showAfterConverts').value = inter.showAfterConverts ?? 1;
+  document.getElementById('inter_autoShow').value = inter.autoShowAfterSeconds ?? 15;
+  document.getElementById('inter_delay').value = inter.delaySeconds ?? 1;
+  document.getElementById('inter_cooldown').value = inter.cooldownSeconds ?? 60;
+  loadStats();
+}
+async function loadStats(){ try{ const r = await fetch(API_BASE + '/api/ads/stats', { credentials:'include' }); const s = await r.json(); document.getElementById('statViews').textContent = s.views||0; document.getElementById('statClicks').textContent = s.clicks||0; }catch{} }
+async function uploadImage(which){
+  const file = document.getElementById(which+'_file').files[0];
+  if(!file){ alert('Please select an image first'); return; }
+  const fd = new FormData(); fd.append('image', file);
+  const r = await fetch(API_BASE + '/api/admin/upload', {method:'POST', credentials:'include', body:fd});
+  const data = await r.json();
+  if(data.url){ document.getElementById(which+'_image_url').value = data.url; document.getElementById(which+'_preview').src = data.url; document.getElementById(which+'_image_label').textContent = data.url; alert('Image uploaded!'); }
+  else alert('Upload failed: ' + (data.error||''));
+}
+['banner','left','right','inter'].forEach(k=>{ document.getElementById(k+'_image_url').addEventListener('input', e=>{ document.getElementById(k+'_preview').src = e.target.value; }); });
+async function removeAd(which){
+  if(!confirm('Are you sure you want to remove this ad?')) return;
+  document.getElementById(which+'_enabled').checked = false;
+  document.getElementById(which+'_title').value=''; document.getElementById(which+'_link').value=''; document.getElementById(which+'_image_url').value=''; document.getElementById(which+'_preview').src='';
+  await saveAds();
+}
+function testFullAd(){
+  alert('Now open the App tab ( / ) - Full Ad will show there. To test in App console, type: DirectAds.testFullAd()');
+  window.open('/', '_blank');
+}
+async function saveAds(){
+  const payload = {
+    banner:{enabled:document.getElementById('banner_enabled').checked,id:'ad_banner',advertiser:document.getElementById('banner_advertiser').value,title:document.getElementById('banner_title').value,image:document.getElementById('banner_image_url').value,link:document.getElementById('banner_link').value,buttonText:document.getElementById('banner_button').value||'Visit Website',type:'website'},
+    leftAd:{enabled:document.getElementById('left_enabled').checked,id:'ad_left',advertiser:document.getElementById('left_advertiser').value,title:document.getElementById('left_title').value,image:document.getElementById('left_image_url').value,link:document.getElementById('left_link').value,buttonText:document.getElementById('left_button').value||'Visit Website',type:'website'},
+    rightAd:{enabled:document.getElementById('right_enabled').checked,id:'ad_right',advertiser:document.getElementById('right_advertiser').value,title:document.getElementById('right_title').value,image:document.getElementById('right_image_url').value,link:document.getElementById('right_link').value,buttonText:document.getElementById('right_button').value||'Visit Website',type:'website'},
+    interstitial:{enabled:document.getElementById('inter_enabled').checked,id:'ad_inter',advertiser:document.getElementById('inter_advertiser').value,title:document.getElementById('inter_title').value,image:document.getElementById('inter_image_url').value,link:document.getElementById('inter_link').value,buttonText:document.getElementById('inter_button').value||'Visit Website',type:'website',
+      showAfterConverts: parseInt(document.getElementById('inter_showAfterConverts').value||'1',10),
+      autoShowAfterSeconds: parseInt(document.getElementById('inter_autoShow').value||'0',10),
+      delaySeconds: parseInt(document.getElementById('inter_delay').value||'0',10),
+      cooldownSeconds: parseInt(document.getElementById('inter_cooldown').value||'60',10)
+    }
+  };
+  document.getElementById('saveMsg').textContent='Saving...';
+  const r = await fetch(API_BASE + '/api/admin/ads',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify(payload)});
+  const data = await r.json();
+  if(data.ok){ document.getElementById('saveMsg').textContent='✅ Done! Ads + Timing are live. Refresh the App to check.'; alert('Ads Saved! Refresh the App, Full Ad will now show on time.'); }
+  else { document.getElementById('saveMsg').textContent='Error: '+data.error; if(r.status===401) logout(); }
+}
+async function changePass(){
+  const oldPassword = document.getElementById('oldPass').value;
+  const newPassword = document.getElementById('newPassAdmin').value;
+  const r = await fetch(API_BASE + '/api/admin/change-password',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({oldPassword,newPassword})});
+  const d = await r.json();
+  document.getElementById('changeMsg').textContent = d.message || d.error || '';
+  if(d.ok){ setTimeout(()=>logout(), 1000); }
+}
+checkLogin().then(loadAds);
+</script>
+</body></html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Login - PDF Studio</title>
+<style>
+*{box-sizing:border-box} body{font-family:system-ui,sans-serif;margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px}
+.card{background:#fff;border-radius:16px;padding:28px;width:100%;max-width:380px;text-align:center}
+h2{margin:0 0 6px} .small{color:#64748b;font-size:13px;margin-bottom:16px}
+input{width:100%;padding:12px;border:1px solid #e5e7eb;border-radius:10px;margin:8px 0;font-size:15px}
+button{width:100%;background:#111;color:#fff;border:0;padding:13px;border-radius:10px;font-weight:800;font-size:15px;cursor:pointer;margin-top:8px}
+button:disabled{opacity:.6}
+#error,#forgotError,#forgotSuccess{font-size:13px;min-height:18px;margin-top:8px}
+#error,#forgotError{color:#dc2626} #forgotSuccess{color:#16a34a}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tabs button{background:#f1f5f9;color:#111;padding:9px;flex:1}
+.tabs button.active{background:#111;color:#fff}
+</style></head><body>
+<div class="card">
+<h2>🔒 PDF Studio Admin</h2>
+<p class="small">Only you can log in.</p>
+<div class="tabs"><button id="tabLogin" class="active" onclick="showTab('login')">Login</button><button id="tabForgot" onclick="showTab('forgot')">Forgot Password</button></div>
+<div id="loginBox">
+<input type="text" id="username" placeholder="Username" value="admin">
+<input type="password" id="password" placeholder="Password" onkeydown="if(event.key==='Enter') login()">
+<button id="loginBtn" onclick="login()">Login</button>
+<div id="error"></div>
+</div>
+<div id="forgotBox" style="display:none">
+<p class="small">Enter your Recovery Code, then create a new password. Your Recovery Code is in your <b>.env</b> file.</p>
+<input type="text" id="recoveryCode" placeholder="Recovery Code">
+<input type="password" id="newPass" placeholder="New Password (min 6 characters)">
+<input type="password" id="newPass2" placeholder="Confirm New Password">
+<button onclick="forgot()">🔑 Set New Password</button>
+<div id="forgotError"></div><div id="forgotSuccess"></div>
+</div>
+<p class="small" style="margin-top:16px;">Forgot password? Click <b>Forgot Password</b> above, or change ADMIN_PASS in the <b>.env</b> file on the server.</p>
+</div>
+<script src="./config.js"></script>
+<script>
+function showTab(which){
+  document.getElementById('loginBox').style.display = which==='login' ? 'block' : 'none';
+  document.getElementById('forgotBox').style.display = which==='forgot' ? 'block' : 'none';
+  document.getElementById('tabLogin').classList.toggle('active', which==='login');
+  document.getElementById('tabForgot').classList.toggle('active', which==='forgot');
+}
+async function login(){
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = 'Checking...';
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  // FIX: credentials include karna zaroori hai warna session nahi banega
+  const r = await fetch(API_BASE + '/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({username, password}) });
+  const data = await r.json();
+  if(data.ok){
+    // FIX SPLIT: Backend ke /admin-bilal-123 pe mat jao, Frontend ke admin.html pe jao
+    window.location.href = './admin.html';
+  } else {
+    document.getElementById('error').textContent = data.error || 'Incorrect password!';
+    btn.disabled = false; btn.textContent = 'Login';
+  }
+}
+async function forgot(){
+  const recoveryCode = document.getElementById('recoveryCode').value.trim();
+  const newPassword = document.getElementById('newPass').value;
+  const newPassword2 = document.getElementById('newPass2').value;
+  document.getElementById('forgotError').textContent = '';
+  document.getElementById('forgotSuccess').textContent = '';
+  if(newPassword !== newPassword2){ document.getElementById('forgotError').textContent = 'Both passwords do not match!'; return; }
+  if(newPassword.length < 6){ document.getElementById('forgotError').textContent = 'Password must be at least 6 characters'; return; }
+  const r = await fetch(API_BASE + '/api/admin/forgot', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({recoveryCode, newPassword}) });
+  const data = await r.json();
+  if(data.ok){ document.getElementById('forgotSuccess').textContent = '✅ ' + data.message + ' Now login from the Login tab.'; }
+  else document.getElementById('forgotError').textContent = data.error;
+}
+</script>
+</body></html>
